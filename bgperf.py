@@ -239,6 +239,7 @@ def gen_conf(args):
         'router-id': '10.10.0.2',
         'local-address': '10.10.0.2/16',
         'check-points': [prefix * neighbor],
+        'route_reflector': route_reflector
     }
 
     conf['tester'] = {}
@@ -346,7 +347,7 @@ if __name__ == '__main__':
     parser_bench.add_argument('-x', '--ext-community-list-num', default=0, type=int)
     parser_bench.add_argument('-g', '--cooling', default=0, type=int)
     parser_bench.add_argument('-o', '--output', metavar='STAT_FILE')
-    parser_bench.add_argument('-u', '--route-reflector', default=False, type=bool)
+    parser_bench.add_argument('-u', '--route-reflector', action='store_true', default=False)
     parser_bench.set_defaults(func=bench)
 
     parser_config = s.add_parser('config', help='generate config')
@@ -358,6 +359,7 @@ if __name__ == '__main__':
     parser_config.add_argument('-e', '--prefix-list-num', default=0, type=int)
     parser_config.add_argument('-c', '--community-list-num', default=0, type=int)
     parser_config.add_argument('-x', '--ext-community-list-num', default=0, type=int)
+    parser_config.add_argument('-u', '--route-reflector', action='store_true', default=False)
     parser_config.set_defaults(func=config)
 
 
