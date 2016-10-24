@@ -294,8 +294,13 @@ def gen_conf(args):
     it = netaddr.iter_iprange('100.0.0.0','160.0.0.0')
     for i in range(3, neighbor+3):
         router_id = '10.10.{0}.{1}'.format(i/255, i%255)
+
+        peer_as = 1000 + i
+        if route_reflector:
+            peer_as = conf['target']['as']
+
         conf['tester'][router_id] = {
-            'as': 1000 + i,
+            'as': peer_as,
             'router-id': router_id,
             'local-address': router_id + '/16',
             'paths': list('{0}/32'.format(ip) for ip in islice(it, prefix)),
