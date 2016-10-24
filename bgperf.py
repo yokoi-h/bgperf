@@ -225,6 +225,7 @@ def gen_conf(args):
     prefix_list = args.prefix_list_num
     community_list = args.community_list_num
     ext_community_list = args.ext_community_list_num
+    route_reflector = args.route_reflector
 
     conf = {}
     conf['target'] = {
@@ -300,6 +301,7 @@ def gen_conf(args):
             'filter': {
                 args.filter_type: assignment,
             },
+            'route_reflector': route_reflector,
         }
     return conf
 
@@ -344,6 +346,7 @@ if __name__ == '__main__':
     parser_bench.add_argument('-x', '--ext-community-list-num', default=0, type=int)
     parser_bench.add_argument('-g', '--cooling', default=0, type=int)
     parser_bench.add_argument('-o', '--output', metavar='STAT_FILE')
+    parser_bench.add_argument('-u', '--route-reflector', default=False, type=bool)
     parser_bench.set_defaults(func=bench)
 
     parser_config = s.add_parser('config', help='generate config')
