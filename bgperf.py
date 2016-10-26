@@ -355,6 +355,12 @@ def config(args):
         f.write(yaml.dump(conf))
 
 
+def gobgp_config(args):
+    with open(args.file) as f:
+        conf = yaml.load(f)
+    gobgp = GoBGP(args.target, './')
+    gobgp.run(conf, 'bgperf')
+
 if __name__ == '__main__':
     parser = ArgumentParser(description='BGP performance measuring tool')
     parser.add_argument('-b', '--bench-name', default='bgperf')
@@ -418,6 +424,10 @@ if __name__ == '__main__':
     tester_config.add_argument('-o', '--output', metavar='STAT_FILE')
     tester_config.add_argument('-u', '--route-reflector', action='store_true', default=False)
     tester_config.set_defaults(func=tester)
+
+    gobgp_cfg = s.add_parser('gobgp_config', help='generate config')
+    gobgp_cfg.add_argument('-f', '--file', metavar='CONFIG_FILE', required=True)
+    gobgp_cfg.set_defaults(func=gobgp_config)
 
     args = parser.parse_args()
     args.func(args)
