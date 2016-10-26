@@ -359,7 +359,7 @@ def gobgp_config(args):
     with open(args.file) as f:
         conf = yaml.load(f)
     gobgp = GoBGP('gobgp', './')
-    gobgp.run(conf, 'bgperf')
+    gobgp.write_config(conf, 'gobgpd.conf')
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='BGP performance measuring tool')
