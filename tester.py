@@ -48,11 +48,31 @@ ulimit -n 65536''']
                 for path in p['paths']:
                     f.write('      route {0} next-hop {1};\n'.format(path, local_address))
                 f.write('''   }
-}''')
-            startup.append('''env exabgp.log.destination={0}/{1}.log \
-exabgp.daemon.daemonize=true \
-exabgp.daemon.user=root \
-exabgp {0}/{1}.conf'''.format(self.guest_dir, p['router-id']))
+}
+''')
+
+                if 'target-sub' in conf:
+                    config += '''neighbor {0} {{
+    peer-as {1};
+    router-id {2};
+    local-address {3};
+    local-as {4};
+    static {{
+'''.format(conf['target-sub']['local-address'].split('/')[0], conf['target-sub']['as'],
+                    p['router-id'], local_address, p['as'])
+                    f.write(config)
+                    for path in p['paths']:
+                        f.write('      route {0} next-hop {1};\n'.format(path, local_address))
+                    f.write('''   }
+}
+''')
+
+                startup.append('''env exabgp.log.destination={0}/{1}.log \
+    exabgp.daemon.daemonize=true \
+    exabgp.daemon.user=root \
+    exabgp {0}/{1}.conf'''.format(self.guest_dir, p['router-id']))
+
+
 
         for p in peers:
             startup.append('ip a add {0} dev eth1'.format(p['local-address']))

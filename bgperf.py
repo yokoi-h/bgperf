@@ -218,6 +218,42 @@ def bench(args):
             if info['checked']:
                 cooling = 0
 
+def tester(args):
+    config_dir = '{0}/{1}'.format(args.dir, args.bench_name)
+    brname = args.bench_name + '-br'
+
+    ip = IPRoute()
+    ctn_intfs = flatten((l.get_attr('IFLA_IFNAME') for l in ip.get_links() if l.get_attr('IFLA_MASTER') == br) for br in ip.link_lookup(ifname=brname))
+
+    # currently ctn name is same as ctn intf
+    # TODO support proper mapping between ctn name and intf name
+    for ctn in ctn_intfs:
+        if ctn != 'tester':
+            dckr.remove_container(ctn, force=True) if ctn_exists(ctn) else None
+
+    if os.path.exists(config_dir):
+        shutil.rmtree(config_dir)
+
+    if args.file:
+        with open(args.file) as f:
+            conf = yaml.load(f)
+    else:
+        conf = gen_conf(args)
+        if not os.path.exists(config_dir):
+            os.makedirs(config_dir)
+        with open('{0}/scenario.yaml'.format(config_dir), 'w') as f:
+            f.write(yaml.dump(conf))
+
+    if len(conf['tester']) > gc_thresh3():
+        print 'gc_thresh3({0}) is lower than the number of peer({1})'.format(gc_thresh3(), len(conf['tester']))
+        print 'type next to increase the value'
+        print '$ echo 16384 | sudo tee /proc/sys/net/ipv4/neigh/default/gc_thresh3'
+
+    print 'run tester'
+    t = Tester('tester', config_dir+'/tester')
+    t.run(conf, brname)
+
+
 def gen_conf(args):
     neighbor = args.neighbor_num
     prefix = args.prefix_num
@@ -367,6 +403,21 @@ if __name__ == '__main__':
     parser_config.add_argument('-u', '--route-reflector', action='store_true', default=False)
     parser_config.set_defaults(func=config)
 
+
+    tester_config = s.add_parser('config', help='generate config')
+    tester_config.add_argument('-t', '--target', choices=['gobgp', 'bird', 'quagga'], default='gobgp')
+    tester_config.add_argument('-i', '--image', help='specify custom docker image')
+    tester_config.add_argument('-f', '--file', metavar='CONFIG_FILE')
+    tester_config.add_argument('-n', '--neighbor-num', default=100, type=int)
+    tester_config.add_argument('-p', '--prefix-num', default=100, type=int)
+    tester_config.add_argument('-l', '--filter-type', choices=['in', 'out'], default='in')
+    tester_config.add_argument('-a', '--as-path-list-num', default=0, type=int)
+    tester_config.add_argument('-e', '--prefix-list-num', default=0, type=int)
+    tester_config.add_argument('-c', '--community-list-num', default=0, type=int)
+    tester_config.add_argument('-x', '--ext-community-list-num', default=0, type=int)
+    tester_config.add_argument('-o', '--output', metavar='STAT_FILE')
+    tester_config.add_argument('-u', '--route-reflector', action='store_true', default=False)
+    tester_config.set_defaults(func=tester)
 
     args = parser.parse_args()
     args.func(args)

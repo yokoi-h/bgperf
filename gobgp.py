@@ -109,7 +109,11 @@ RUN go install github.com/osrg/gobgp/gobgp
                 c['apply-policy'] = {'config': a}
             return c
 
-        config['neighbors'] = [gen_neighbor_config(n) for n in conf['tester'].values() + [conf['monitor']]]
+        neighbors = conf['tester'].values() + [conf['monitor']]
+        if 'target-sub' in conf:
+            neighbors = neighbors + [conf['target-sub']]
+
+        config['neighbors'] = [gen_neighbor_config(n) for n in neighbors]
         with open('{0}/{1}'.format(self.host_dir, name), 'w') as f:
             f.write(yaml.dump(config, default_flow_style=False))
         self.config_name = name
