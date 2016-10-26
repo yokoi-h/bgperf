@@ -358,7 +358,7 @@ def config(args):
 def gobgp_config(args):
     with open(args.file) as f:
         conf = yaml.load(f)
-    gobgp = GoBGP(args.target, './')
+    gobgp = GoBGP('gobgp', './')
     gobgp.run(conf, 'bgperf')
 
 if __name__ == '__main__':
