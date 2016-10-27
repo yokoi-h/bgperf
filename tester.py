@@ -52,7 +52,7 @@ ulimit -n 65536''']
 ''')
 
                 if 'target-sub' in conf:
-                    config += '''neighbor {0} {{
+                    config = '''neighbor {0} {{
     peer-as {1};
     router-id {2};
     local-address {3};
@@ -71,8 +71,6 @@ ulimit -n 65536''']
     exabgp.daemon.daemonize=true \
     exabgp.daemon.user=root \
     exabgp {0}/{1}.conf'''.format(self.guest_dir, p['router-id']))
-
-
 
         for p in peers:
             startup.append('ip a add {0} dev eth1'.format(p['local-address']))
