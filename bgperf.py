@@ -410,7 +410,7 @@ if __name__ == '__main__':
     parser_config.set_defaults(func=config)
 
 
-    tester_config = s.add_parser('config', help='generate config')
+    tester_config = s.add_parser('tester', help='generate config')
     tester_config.add_argument('-t', '--target', choices=['gobgp', 'bird', 'quagga'], default='gobgp')
     tester_config.add_argument('-i', '--image', help='specify custom docker image')
     tester_config.add_argument('-f', '--file', metavar='CONFIG_FILE')
