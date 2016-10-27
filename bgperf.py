@@ -328,7 +328,7 @@ def gen_conf(args):
         assignment.append(name)
 
     it = netaddr.iter_iprange('100.0.0.0','160.0.0.0')
-    for i in range(3, neighbor+3):
+    for i in range(20, neighbor+20):
         router_id = '10.10.{0}.{1}'.format(i/255, i%255)
 
         peer_as = 1000 + i
