@@ -79,6 +79,10 @@ ulimit -n 65536''']
         with open(filename, 'w') as f:
             f.write('\n'.join(startup))
         os.chmod(filename, 0777)
+
+        if 'config_only' in conf and conf['config_only']:
+            return
+
         i = dckr.exec_create(container=self.name, cmd='{0}/start.sh'.format(self.guest_dir))
         cnt = 0
         for lines in dckr.exec_start(i['Id'], stream=True):
