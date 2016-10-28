@@ -356,7 +356,7 @@ def gen_conf(args):
             'route_reflector': route_reflector,
         }
 
-        if conf.use_vpn:
+        if args.use_vpn:
             conf['tester'][router_id]['vrf'] = {'rd': peer_as+":"+(1000 + i), 'rt': peer_as+":"+(1000 + i)}
 
     return conf
