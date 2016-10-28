@@ -156,7 +156,7 @@ def bench(args):
         target.run(conf, brname)
 
     print 'set vrf config'
-    if conf.use_vpn:
+    if args.use_vpn:
         for idx, peer in enumerate(conf['tester'].values()):
             vrf = peer['vrf']
             target.register_vrf(peer['router-id'], vrf['rd'], vrf['rt'])
