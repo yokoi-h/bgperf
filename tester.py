@@ -33,7 +33,7 @@ ulimit -n 65536''']
 
         peers = conf['tester'].values()
 
-        for p in peers:
+        for i, p in enumerate(peers):
             with open('{0}/{1}.conf'.format(self.host_dir, p['router-id']), 'w') as f:
                 local_address = p['local-address'].split('/')[0]
                 config = '''neighbor {0} {{
@@ -46,7 +46,11 @@ ulimit -n 65536''']
                p['router-id'], local_address, p['as'])
                 f.write(config)
                 for path in p['paths']:
-                    f.write('      route {0} next-hop {1};\n'.format(path, local_address))
+                    if conf.mpls:
+                        #route 10.0.0.0/24 rd 65000:1 next-hop 200.10.0.101 extended-community [ 0x0002fde800000001 0x0002271000000001 ] label 1000 split /25 ;
+                        f.write('      route {0} rd {1}:{2} next-hop {3} extended-community [ 0x0002fde800000001 0x0002271000000001 ] label {4} split /25 ;\n'.format(path, p['as'], (1000+i), local_address, (1000+i)))
+                    else
+                        f.write('      route {0} next-hop {1};\n'.format(path, local_address))
                 f.write('''   }
 }
 ''')

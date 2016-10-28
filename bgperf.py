@@ -155,6 +155,16 @@ def bench(args):
             target = target(args.target, '{0}/{1}'.format(config_dir, args.target))
         target.run(conf, brname)
 
+    print 'set vrf config'
+    if conf.use_vpn:
+        for idx, peer in enumerate(conf['tester'].values()):
+            vrf = peer['vrf']
+            target.register_vrf(peer['router-id'], vrf['rd'], vrf['rt'])
+            if idx > 0:
+                rm_line()
+            print 'vrf: {0}/{1}'.format((idx+1), len(conf['tester']))
+
+
     print 'run monitor'
     m = Monitor('monitor', config_dir+'/monitor')
     m.run(conf, brname)
@@ -345,6 +355,10 @@ def gen_conf(args):
             },
             'route_reflector': route_reflector,
         }
+
+        if conf.use_vpn:
+            conf['tester'][router_id]['vrf'] = {'rd': peer_as+":"+(1000 + i), 'rt': peer_as+":"+(1000 + i)}
+
     return conf
 
 
@@ -395,6 +409,7 @@ if __name__ == '__main__':
     parser_bench.add_argument('-g', '--cooling', default=0, type=int)
     parser_bench.add_argument('-o', '--output', metavar='STAT_FILE')
     parser_bench.add_argument('-u', '--route-reflector', action='store_true', default=False)
+    parser_bench.add_argument('-v', '--use-vpn', action='store_true', default=False)
     parser_bench.set_defaults(func=bench)
 
     parser_config = s.add_parser('config', help='generate config')

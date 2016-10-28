@@ -98,6 +98,9 @@ RUN go install github.com/osrg/gobgp/gobgp
                 c['route-server'] = {'config': {'route-server-client': True}}
                 c['transport'] = {'config': {'local-address': conf['target']['local-address'].split('/')[0]}}
 
+            if 'vrf' in n:
+                c['afi-safis'] = [{'config': {'afi-safi-name': 'ipv4-unicast'}}, {'config': {'afi-safi-name': 'l3vpn-ipv4-unicast'}}]
+
             if 'filter' in n:
                 a = {}
                 if 'in' in n['filter']:
@@ -137,3 +140,7 @@ gobgpd -t yaml -f {1}/{2} -l {3} > {1}/gobgpd.log 2>&1
         dckr.exec_start(i['Id'], detach=True, socket=True)
 
         return ctn
+
+    def register_vrf(self, name, rd, rt):
+        cmd = 'gobgp vrf add {0} rd {1} rt both {2}'.format(name, rd, rt)
+        self.local(cmd)
