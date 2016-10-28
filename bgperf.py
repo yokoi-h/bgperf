@@ -357,7 +357,7 @@ def gen_conf(args):
         }
 
         if args.use_vpn:
-            conf['tester'][router_id]['vrf'] = {'rd': peer_as+":"+str(1000 + i), 'rt': peer_as+":"+str(1000 + i)}
+            conf['tester'][router_id]['vrf'] = {'rd': "{0}:{1}".format(peer_as, (1000 + i)), 'rt': "{0}:{1}".format(peer_as, (1000 + i))}
 
     return conf
 
