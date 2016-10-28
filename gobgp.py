@@ -144,3 +144,7 @@ gobgpd -t yaml -f {1}/{2} -l {3} > {1}/gobgpd.log 2>&1
     def register_vrf(self, name, rd, rt):
         cmd = 'gobgp vrf add {0} rd {1} rt both {2}'.format(name, rd, rt)
         self.local(cmd)
+
+    def local(self, cmd, stream=False):
+        i = dckr.exec_create(container=self.name, cmd=cmd)
+        return dckr.exec_start(i['Id'], stream=stream)
