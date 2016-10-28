@@ -48,7 +48,7 @@ ulimit -n 65536''']
                 for path in p['paths']:
                     if 'vrf' in p:
                         #route 10.0.0.0/24 rd 65000:1 next-hop 200.10.0.101 extended-community [ 0x0002fde800000001 0x0002271000000001 ] label 1000 split /25 ;
-                        f.write('      route {0} rd {1}:{2} next-hop {3} extended-community [ 0x0002fde800000001 0x0002271000000001 ] label {4} split /25 ;\n'.format(path, p['as'], (1000+i), local_address, (1000+i)))
+                        f.write('      route {0} rd {1} next-hop {2} extended-community [ target:{3} ] label {4} split /25 ;\n'.format(path, p['vrf']['rd'], local_address, p['vrf']['rt'], (1000+i)))
                     else:
                         f.write('      route {0} next-hop {1};\n'.format(path, local_address))
                 f.write('''   }

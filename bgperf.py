@@ -288,6 +288,10 @@ def gen_conf(args):
         'route_reflector': route_reflector
     }
 
+    if args.use_vpn:
+        conf['monitor']['vrf'] = {}
+
+
     conf['tester'] = {}
     offset = 0
 
