@@ -90,6 +90,7 @@ RUN go install github.com/osrg/gobgp/gobgp
 
         def gen_neighbor_config(n):
             c = {'config': {'neighbor-address': n['local-address'].split('/')[0], 'peer-as': n['as']}}
+            c['timers'] = {'config': {'hold-time': 600, 'keepalive-interval': 200}}
 
             if 'route_reflector' in n and n['route_reflector']:
                 c['route-reflector'] = {'config': {'route-reflector-client': True,

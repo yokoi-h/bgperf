@@ -41,6 +41,7 @@ ulimit -n 65536''']
     router-id {2};
     local-address {3};
     local-as {4};
+    hold-time 600;
     static {{
 '''.format(conf['target']['local-address'].split('/')[0], conf['target']['as'],
                p['router-id'], local_address, p['as'])
@@ -61,6 +62,7 @@ ulimit -n 65536''']
     router-id {2};
     local-address {3};
     local-as {4};
+    hold-time 600;
     static {{
 '''.format(conf['target-sub']['local-address'].split('/')[0], conf['target-sub']['as'],
                     p['router-id'], local_address, p['as'])
